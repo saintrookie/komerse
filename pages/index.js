@@ -1,17 +1,21 @@
 import { Button, Card, CardActionArea, CardActions, CardContent, CardMedia, Typography } from '@mui/material';
 import Grid from '@mui/material/Grid';
+import SendIcon from '@mui/icons-material/Send';
 import NextLink from 'next/link';
 import Layout from '../components/Layout';
-import data from '../utils/data';
+import Product from '../models/Product';
+import db from '../utils/db';
 
-export default function Home() {
+export default function Home(props) {
+  const {products} = props; 
   return (
     <Layout>
+      <h1>New Products</h1>
       <Grid container spacing={3}>
-        {data.products.map((product) => (
+        {products.map((product) => (
           <Grid item md={4} key={product.name}>
-            <Card>
-              <NextLink href={`product/${product.slug}`} passHref>
+            <Card variant="outlined">
+              <NextLink href={`/product/${product.slug}`} passHref>
                 <a>
                   <CardActionArea>
                     <CardMedia 
@@ -20,14 +24,15 @@ export default function Home() {
                       title={product.name}  
                     ></CardMedia>
                     <CardContent>
-                      <Typography>{product.name}</Typography>
+                      <Typography gutterBottom variant="h5" component="div">{product.name}</Typography>
+                      <Typography  variant="body2" color="text.secondary">
+                      Rp {product.price} K
+                    </Typography>
                     </CardContent>
                   </CardActionArea>
                   <CardActions>
-                    <Typography>
-                      {product.price}
-                    </Typography>
-                    <Button>
+                   
+                    <Button variant="outlined" size="secondary" endIcon={<SendIcon />} >
                       Add Cart
                     </Button>
                   </CardActions>
@@ -39,4 +44,15 @@ export default function Home() {
       </Grid>
     </Layout>
   )
+}
+
+export async function getServerSideProps(){
+  await db.connect();
+  const products = await Product.find({}).lean();
+  await db.disconnect();
+  return{
+    props:{
+      products: products.map(db.convertDocToObj),
+    }
+  }
 }

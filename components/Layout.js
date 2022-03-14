@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext } from 'react';
 import Head from 'next/head';
 import NextLink from 'next/link';
 import Container from '@mui/material/Container';
@@ -6,18 +6,19 @@ import Typography from '@mui/material/Typography';
 import Toolbar from '@mui/material/Toolbar'
 import AppBar from '@mui/material/AppBar';
 import Link from '@mui/material/Link';
+import Badge  from '@mui/material/Badge';
 import useStyles from '../utils/styles';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Switch from '@mui/material/Switch';
-import { CssBaseline } from '@mui/material/CssBaseline';
+import CssBaseline from '@mui/material/CssBaseline';
 import { Store } from '../utils/store';
 import Cookies from 'js-cookie';
 
 
 export default function Layout({ title, description, children }) {
 
-    const {state, dispatch} = useContext(Store);
-    const darkMode = state;
+    const { state, dispatch } = useContext(Store);
+    const { darkMode, cart } = state;
     const theme = createTheme({
             typography: {
                 h1:{
@@ -35,23 +36,20 @@ export default function Layout({ title, description, children }) {
                     fontWeight: 400,
                     margin: '1em 0',
                 },
-                palette: {
-                    type: darkMode ? 'dark' : 'light',
-                    primary: {
-                        main: '#f0C000',
-                    },
-                    secondary: {
-                        main: '#208080'
-                    }
-                },
+               
             },
+            palette: {
+                mode: darkMode ? 'dark' : 'light',
+                
+            },
+        
     });
 
     const classes = useStyles();
     const darkModeChangeHandler = () => {
         dispatch({ type: darkMode ? 'DARK_MODE_OFF' : 'DARK_MODE_ON' });
         const newDarkMode = !darkMode;
-        Cookies.set(darkMode, newDarkMode ? 'ON' : 'OFF');
+        Cookies.set('darkMode', newDarkMode ? 'ON' : 'OFF');
     };
 
     return (
@@ -72,12 +70,23 @@ export default function Layout({ title, description, children }) {
                             </Link>
                         </NextLink>
                         <div className={classes.grow}></div>
-                        <Switch checked={darkMode} onChange={darkModeChangeHandler}></Switch>
+                        <Switch checked={darkMode} onChange={darkModeChangeHandler} />
                         <NextLink href="/login" passHref>
-                            <Link><a>Login</a></Link>
+                            <Link>Login</Link>
                         </NextLink>
                         <NextLink href="/cart" passHref>
-                            <Link><a>Cart</a></Link>
+                            <Link>
+                                {cart.cartItems.length > 0 ? (
+                                    <Badge
+                                        color="secondary"
+                                        badgeContent={cart.cartItems.length}
+                                    >
+                                        Cart
+                                    </Badge>
+                                    ) : (
+                                    'Cart'
+                                )}
+                            </Link>
                         </NextLink>
                     </Toolbar>
                 </AppBar>
