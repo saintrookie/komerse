@@ -5,11 +5,27 @@ import Layout from '../components/Layout';
 import NextLink from 'next/link';
 import { Store } from '../utils/store';
 import Image from 'next/image';
+import axios from 'axios';
+import { useRouter } from 'next/router';
 
 function CartScreen(){
-    const { state } = useContext(Store);
+    const router = useRouter();
+    const { state, dispatch } = useContext(Store);
     const { cart: { cartItems }, } = state;
-
+    const updateCartHandler =  async (item, quantity) => {
+        const { data } = await axios.get(`/api/products/${item._id}`);
+        if (data.countInStock <= 0) {
+          window.alert('Sorry. Product is out of stock');
+          return;
+        }
+        dispatch({ type: 'CART_ADD_ITEM', payload: { ...item, quantity} });
+    };
+    const removeItemHandler = (item) => {
+        dispatch({ type:'CART_REMOVE_ITEM', payload: item });
+    };
+    const checkOutHandler = () => {
+        router.push('/shipping');
+    }
 
     return <Layout title="Shopping Cart">
         <Typography component="h1" variant="h1">Shopping Cart</Typography>
@@ -23,21 +39,11 @@ function CartScreen(){
                             <Table>
                                 <TableHead>
                                     <TableRow>
-                                        <TableCell>
-                                            Image
-                                        </TableCell>
-                                        <TableCell>
-                                            Name
-                                        </TableCell>
-                                        <TableCell align="right">
-                                            Quantity
-                                        </TableCell>
-                                        <TableCell align="right">
-                                            Price
-                                        </TableCell>
-                                        <TableCell align="right">
-                                            Action
-                                        </TableCell>
+                                        <TableCell>Image</TableCell>
+                                        <TableCell>Name</TableCell>
+                                        <TableCell align="right">Quantity</TableCell>
+                                        <TableCell align="right">Price</TableCell>
+                                        <TableCell align="right">Action</TableCell>
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
@@ -58,7 +64,7 @@ function CartScreen(){
                                                 </NextLink>
                                             </TableCell>
                                             <TableCell align="right">
-                                                <Select value={item.quantity}>
+                                                <Select value={item.quantity} onChange={(e) => updateCartHandler(item, e.target.value)}>
                                                     {[...Array(item.countInStock).keys()].map((x) => (
                                                         <MenuItem key={x + 1} value={x + 1}>
                                                             {x + 1}
@@ -70,7 +76,7 @@ function CartScreen(){
                                                 Rp {item.price} K
                                             </TableCell>
                                             <TableCell align="right">
-                                                <Button variant="contained" color="secondary">
+                                                <Button variant="contained" color="secondary" onClick={() => removeItemHandler(item)}>
                                                     x
                                                 </Button>
                                             </TableCell>
@@ -89,7 +95,7 @@ function CartScreen(){
                                     </Typography>
                                 </ListItem>
                                 <ListItem>
-                                    <Button variant="contained" color="secondary" fullWidth>Check Out</Button>
+                                    <Button variant="contained" color="secondary" fullWidth onClick={checkOutHandler}>Check Out</Button>
                                 </ListItem>
                             </List>
                         </Card>
