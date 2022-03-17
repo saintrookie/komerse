@@ -1,4 +1,24 @@
+import bcrypt from 'bcrypt';
+
+var saltRounds = 10;  
 const data = {
+  users : [
+   
+    {
+      name: 'John',
+      email: 'admin@komerse.com',
+      password: bcrypt.hashSync('admin12345', saltRounds),
+      isAdmin: true,
+
+    },
+    {
+      name: 'Jono',
+      email: 'jono@komerse.com',
+      password: bcrypt.hashSync('jono123', saltRounds),
+      isAdmin: false,
+
+    },
+  ],
   products: [
     {
       name: 'Brown Kotanx',
@@ -30,8 +50,8 @@ const data = {
     },
     {
       name: 'White Suite',
-      slug: 'Underwear',
-      category: 'Shirts',
+      slug: 'white-suite',
+      category: 'Bodysuit',
       image: '/images/image-3.jpg',
       price: 90,
       brand: 'Unknown',
