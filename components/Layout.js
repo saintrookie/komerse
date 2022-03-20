@@ -37,6 +37,7 @@ export default function Layout({ title, description, children }) {
                     fontSize: '2.6em',
                     fontWeight: 400,
                     margin: '1em 0',
+                    textAlign: 'center',
                 },
                
             },
@@ -95,8 +96,7 @@ export default function Layout({ title, description, children }) {
                                 aria-controls={open ? 'basic-menu' : undefined}
                                 aria-haspopup="true"
                                 aria-expanded={open ? 'true' : undefined}
-                                onClick={loginClickHandler}
-                            >
+                                onClick={loginClickHandler}>
                                 {userInfo.name}
                             </Button>
                        

@@ -26,40 +26,43 @@ export default function Home(props) {
     router.push('/cart');
   };
   return (
-    <Layout>
-      <h1>New Products</h1>
-      <Grid container spacing={3}>
-        {products.map((product) => (
-          <Grid item md={4} key={product.name}>
-            <Card variant="outlined">
-              <NextLink href={`/product/${product.slug}`} passHref>
-                <a>
-                  <CardActionArea>
-                    <CardMedia 
-                      component="img"
-                      image={product.image}
-                      title={product.name}  
-                    ></CardMedia>
-                    <CardContent>
-                      <Typography gutterBottom variant="h5" component="div">{product.name}</Typography>
-                      <Typography  variant="body2" color="text.secondary">
-                      Rp {product.price} K
-                    </Typography>
-                    </CardContent>
-                  </CardActionArea>
-                  <CardActions>
-                   
-                    <Button variant="outlined" size="secondary" endIcon={<SendIcon />} onClick={()=>addToCartHandler(product)} >
-                      Add Cart
-                    </Button>
-                  </CardActions>
-                </a>
-              </NextLink>
-            </Card>
-          </Grid>
-        ))}
-      </Grid>
-    </Layout>
+    <div>
+      <Layout>
+        <h1>New Products</h1>
+        <Grid container spacing={3}>
+          {products.map((product) => (
+            <Grid item md={4} key={product.name}>
+              <Card variant="outlined">
+                <NextLink href={`/product/${product.slug}`} passHref>
+                  <a>
+                    <CardActionArea>
+                      <CardMedia 
+                        component="img"
+                        image={product.image}
+                        title={product.name}  
+                      ></CardMedia>
+                      <CardContent>
+                        <Typography gutterBottom variant="h5" component="div">{product.name}</Typography>
+                        <Typography  variant="body2" color="text.secondary">
+                        Rp {product.price} K
+                      </Typography>
+                      </CardContent>
+                    </CardActionArea>
+                    <CardActions>
+                      <>
+                        <Button variant="outlined" size="secondary" endIcon={<SendIcon />} onClick={()=>addToCartHandler(product)} >
+                          Add Cart
+                        </Button>
+                      </>
+                    </CardActions>
+                  </a>
+                </NextLink>
+              </Card>
+            </Grid>
+          ))}
+        </Grid>
+      </Layout>
+    </div>
   )
 }
 

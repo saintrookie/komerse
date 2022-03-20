@@ -86,7 +86,7 @@ function CartScreen(){
                             </Table>
                         </TableContainer>
                     </Grid>
-                    <Grid md={3} xs={12}>
+                    <Grid item md={3} xs={12}>
                         <Card>
                             <List>
                                 <ListItem>

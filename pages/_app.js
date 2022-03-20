@@ -1,3 +1,5 @@
+import { Slide } from '@mui/material';
+import { SnackbarProvider } from 'notistack';
 import { useEffect } from 'react'
 import '../styles/globals.css'
 import { StoreProvider } from '../utils/store';
@@ -10,9 +12,12 @@ function MyApp({ Component, pageProps }) {
     }
   }, []);
   return (
-    <StoreProvider>
-      <Component {...pageProps} />
-    </StoreProvider>
+    <SnackbarProvider anchorOrigin={{ vertical: 'top', horizontal: 'center' }} TransitionComponent={Slide}>
+      <StoreProvider>
+        <Component {...pageProps} />
+      </StoreProvider>
+    </SnackbarProvider>
+    
   )
 }
 

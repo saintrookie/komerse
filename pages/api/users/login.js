@@ -11,7 +11,9 @@ handler.post(async (req, res) => {
     const user = await User.findOne({email: req.body.email});
     const match = await bcrypt.compare(req.body.password, user.password);
     await db.disconnect();
-    
+    if(user === ''){
+        res.status(401).send({ message:'Not Authorized' });
+    }
     if(user && match) {
         const token = signToken(user);
         res.send({
@@ -22,7 +24,7 @@ handler.post(async (req, res) => {
             isAdmin: user.isAdmin,
         });
     }else{
-        res.status(401).send({ message:'Invalid User or Password' });
+        res.status(401).send({ message:'Invalid E-mail or Password' });
     }
 });
 
