@@ -1,6 +1,6 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
-import { Button, Card, Grid, Link, List, ListItem, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
+import { Button, Card, CircularProgress, Grid, Link, List, ListItem, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
 import Layout from '../components/Layout';
 import NextLink from 'next/link';
 import { Store } from '../utils/store';
@@ -8,11 +8,16 @@ import Image from 'next/image';
 import { useRouter } from 'next/router';
 import useStyles from '../utils/styles';
 import CheckoutWizard from '../components/CheckoutWizard';
+import { useSnackbar } from 'notistack';
+import Cookies from 'js-cookie';
+import axios from 'axios';
+import { getError } from '../utils/error';
 
 function placeOrder(){
     const router = useRouter();
     const { state, dispatch } = useContext(Store);
-    const { cart: { cartItems, shippingAddress, paymentMethod }, } = state;
+    const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+    const { userInfo, cart: { cartItems, shippingAddress, paymentMethod }, } = state;
     const classes = useStyles();
     useEffect(() => {
         if(!paymentMethod){
@@ -26,7 +31,34 @@ function placeOrder(){
     const shippingPrice = itemsPrice > 200 ? 0 : 15;
     const taxPrice = round2(itemsPrice * 0.15);
     const totalPrice = round2(itemsPrice + shippingPrice + taxPrice);
-
+    const [loading, setLoading] = useState(false);
+    
+    const placeOrderHandler = async() => {
+        closeSnackbar();
+        try {
+            setLoading(true);
+            const { data } = await axios.post('/api/orders', {
+                orderItems: cartItems,
+                shippingAddress,
+                paymentMethod,
+                itemsPrice,
+                shippingPrice,
+                taxPrice,
+                totalPrice
+            }, {
+                headers: {
+                    'Authorization': `Bearer ${userInfo.token}`,
+                }
+            });
+            dispatch({type: 'CART_CLEAR' });
+            Cookies.remove('cartItems');
+            setLoading(false);
+            router.push(`/order/${data._id}`);
+        } catch(err){
+            setLoading(false);
+            enqueueSnackbar(getError(err), { variant: 'error' });
+        }
+    }
     return (
         <Layout title="Place Order">
             <CheckoutWizard activeStep={3}></CheckoutWizard>
@@ -152,8 +184,9 @@ function placeOrder(){
                                 </Grid>
                             </ListItem>
                             <ListItem>
-                                <Button variant="contained" color="secondary" fullWidth>Place Order</Button>
+                                <Button onClick={placeOrderHandler} variant="contained" color="secondary" fullWidth>Place Order</Button>
                             </ListItem>
+                            {loading && <ListItem><CircularProgress /></ListItem>}
                         </List>
                     </Card>
                 </Grid>
