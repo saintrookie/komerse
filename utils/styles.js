@@ -44,7 +44,10 @@ const useStyles = makeStyles({
     },
     error:{
         color: '#f04040',
-    }
+    },
+    fullwidth:{
+        width: '100%',
+    },
 });
 
 export default useStyles;

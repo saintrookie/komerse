@@ -1,4 +1,5 @@
 import { Slide } from '@mui/material';
+import { PayPalScriptProvider } from '@paypal/react-paypal-js';
 import { SnackbarProvider } from 'notistack';
 import { useEffect } from 'react'
 import '../styles/globals.css'
@@ -14,7 +15,9 @@ function MyApp({ Component, pageProps }) {
   return (
     <SnackbarProvider anchorOrigin={{ vertical: 'top', horizontal: 'center' }} TransitionComponent={Slide}>
       <StoreProvider>
-        <Component {...pageProps} />
+        <PayPalScriptProvider deferLoading={true}>
+          <Component {...pageProps} />
+        </PayPalScriptProvider>       
       </StoreProvider>
     </SnackbarProvider>
     
