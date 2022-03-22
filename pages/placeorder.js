@@ -23,6 +23,9 @@ function placeOrder(){
         if(!paymentMethod){
             router.push('/payment');
         }
+        if(cartItems.lenght === 0){
+            router.push('/cart');
+        }
     }, []);
 
     const round2 = (num) => Math.round(num*100 + Number.EPSILON) / 100;
@@ -195,5 +198,6 @@ function placeOrder(){
     )
     
 }
+
 
 export default dynamic(() => Promise.resolve(placeOrder), {ssr: false});
