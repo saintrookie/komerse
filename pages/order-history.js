@@ -39,7 +39,6 @@ function OrderHistory() {
     });
 
     useEffect(() => {
-        console.log(userInfo.userInfo.token);
         if(!userInfo){
             router.push('/login');
         }
@@ -92,6 +91,7 @@ function OrderHistory() {
                                                         <TableCell>ID</TableCell>
                                                         <TableCell>DATE</TableCell>
                                                         <TableCell>TOTAL</TableCell>
+                                                        <TableCell>PAY METHOD</TableCell>
                                                         <TableCell>PAID</TableCell>
                                                         <TableCell>DELIVER</TableCell>
                                                         <TableCell>ACTION</TableCell>
@@ -102,9 +102,9 @@ function OrderHistory() {
                                                     {orders.map((order) => (
                                                         <TableRow key={order._id}>
                                                             <TableCell>{order._id.substring(20, 24)}</TableCell>
-                                                            <TableCell>{order.createAt}</TableCell>
+                                                            <TableCell>{order.createdAt}</TableCell>
                                                             <TableCell>Rp {order.totalPrice}</TableCell>
-                                                            <TableCell>{order.createAt}</TableCell>
+                                                            <TableCell>{order.paymentMethod}</TableCell>
                                                             <TableCell>{order.isPaid ? `paid at ${order.paidAt}` : 'Not Paid'}</TableCell>
                                                             <TableCell>{order.isDelivered ? `paid at ${order.deliveredAt}` : 'Not Delivered'}</TableCell>
                                                             <TableCell><NextLink href={`/order/${order._id}`} passHref><Button variant="contained">Details</Button></NextLink></TableCell>

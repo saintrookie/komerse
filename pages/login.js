@@ -9,6 +9,7 @@ import { useRouter } from 'next/router';
 import Cookies from 'js-cookie';
 import { Controller, useForm } from 'react-hook-form';
 import { useSnackbar } from 'notistack';
+import { getError } from '../utils/error';
 
 
 export default function Login() {
@@ -30,9 +31,10 @@ export default function Login() {
             const { data } = await axios.post('/api/users/login', { email, password });
             dispatch({ type:'USER_LOGIN', payload: data });
             Cookies.set('userInfo', JSON.stringify(data));
+            enqueueSnackbar('Login Successfully', {variant: 'success'});
             router.push(redirect || '/');
         } catch (err){
-            enqueueSnackbar(err.response.data ? err.response.data.message : err.message, {variant: 'error'});
+            enqueueSnackbar(getError(err), {variant: 'error'});
         }
     }
     

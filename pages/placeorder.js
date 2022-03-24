@@ -56,6 +56,7 @@ function placeOrder(){
             dispatch({type: 'CART_CLEAR' });
             Cookies.remove('cartItems');
             setLoading(false);
+            enqueueSnackbar('Your Order Successfully Added', {variant: 'success'});
             router.push(`/order/${data._id}`);
         } catch(err){
             setLoading(false);
